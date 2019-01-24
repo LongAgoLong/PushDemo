@@ -3,8 +3,6 @@ package com.leo.pushdemo;
 import android.app.Application;
 
 import com.leo.push.agent.Push;
-import com.leo.push.agent.PushService;
-import com.leo.push.common.Const;
 
 public class PushApplication extends Application {
     @Override
