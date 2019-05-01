@@ -8,7 +8,7 @@ import android.util.Log;
 import com.huawei.hms.support.api.push.PushReceiver;
 import com.leo.push.common.Message;
 import com.leo.push.common.PushInterface;
-import com.leo.push.utils.JHandler;
+import com.leo.push.utils.MainHandler;
 import com.leo.push.utils.JsonUtils;
 import com.leo.push.utils.PushTokenUtil;
 import com.leo.push.utils.Target;
@@ -50,7 +50,7 @@ public class EMHuaweiPushReceiver extends PushReceiver {
         mToken = token;
         PushTokenUtil.setPushToken(context, token);
         if (mPushInterface != null) {
-            JHandler.handler().post(() -> mPushInterface.onRegister(context, token));
+            MainHandler.handler().post(() -> mPushInterface.onRegister(context, token));
         }
     }
 
@@ -73,9 +73,9 @@ public class EMHuaweiPushReceiver extends PushReceiver {
                 //华为的sdk在透传的时候无法实现extra字段，这里要注意
                 message.setExtra("{}");
                 message.setTarget(Target.EMUI);
-                JHandler.handler().post(() -> mPushInterface.onCustomMessage(context, message));
+                MainHandler.handler().post(() -> mPushInterface.onCustomMessage(context, message));
             }
-            Log.i("Push", content);
+            Log.i("RomPush", content);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -117,7 +117,7 @@ public class EMHuaweiPushReceiver extends PushReceiver {
                         message.setExtra(extra);
 
                         message.setTarget(Target.EMUI);
-                        JHandler.handler().post(() -> mPushInterface.onMessageClicked(context, message));
+                        MainHandler.handler().post(() -> mPushInterface.onMessageClicked(context, message));
                     }
                 }
             } catch (Exception e) {

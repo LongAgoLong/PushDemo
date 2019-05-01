@@ -5,14 +5,18 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.os.Process;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.coloros.mcssdk.PushManager;
+import com.coloros.mcssdk.callback.PushAdapter;
 import com.huawei.android.hms.agent.HMSAgent;
 import com.leo.push.agent.emui.EMHuaweiPushReceiver;
 import com.leo.push.agent.jpush.JPushReceiver;
 import com.leo.push.agent.miui.MiuiReceiver;
-import com.leo.push.common.Const;
+import com.leo.push.agent.oppo.OppoReceiver;
+import com.leo.push.common.RomPushConst;
 import com.leo.push.common.PushInterface;
 import com.leo.push.model.TokenModel;
 import com.leo.push.utils.RomUtil;
@@ -21,6 +25,9 @@ import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,8 +38,16 @@ import cn.jpush.android.api.JPushInterface;
  * Created by LEO
  * on 2017/7/3.
  */
-public class Push {
-    private static final String TAG = Push.class.getSimpleName();
+public class RomPush {
+    private static final String TAG = RomPush.class.getSimpleName();
+    private static WeakReference<Context> weakReference;
+
+    public static Context getContext() {
+        if (null == weakReference) {
+            return null;
+        }
+        return weakReference.get();
+    }
 
     /**
      * 注册
@@ -42,8 +57,10 @@ public class Push {
      * @param pushInterface
      */
     public static void register(Context context, boolean debug, PushInterface pushInterface) {
-        if (context == null)
+        if (context == null) {
             return;
+        }
+        weakReference = new WeakReference<>(context);
         if (RomUtil.rom() == Target.EMUI) {
             if (pushInterface != null) {
                 EMHuaweiPushReceiver.registerInterface(pushInterface);
@@ -53,9 +70,7 @@ public class Push {
             if (pushInterface != null) {
                 MiuiReceiver.registerInterface(pushInterface);
             }
-            if (shouldInit(context)) {
-                MiPushClient.registerPush(context, Const.getMiui_app_id(), Const.getMiui_app_key());
-            }
+            MiPushClient.registerPush(context, RomPushConst.getMiuiId(), RomPushConst.getMiuiKey());
             if (debug) {
                 LoggerInterface newLogger = new LoggerInterface() {
                     @Override
@@ -75,6 +90,11 @@ public class Push {
                 };
                 Logger.setLogger(context, newLogger);
             }
+        } else if (RomUtil.rom() == Target.OPPO) {
+            if (pushInterface != null) {
+                OppoReceiver.registerInterface(pushInterface);
+            }
+            PushManager.getInstance().register(context, RomPushConst.getOppoKey(), RomPushConst.getOppoSecret(), new PushAdapter());
         } else {
             if (pushInterface != null) {
                 JPushReceiver.registerInterface(pushInterface);
@@ -86,7 +106,7 @@ public class Push {
 //            if (pushInterface != null) {
 //                FlymeReceiver.registerInterface(pushInterface);
 //            }
-//            com.meizu.cloud.pushsdk.PushManager.register(context, Const.getFlyme_app_id(), Const.getFlyme_app_key());
+//            com.meizu.cloud.pushsdk.PushManager.register(context, RomPushConst.getFlymeId(), RomPushConst.getFlymeKey());
 //            return;
 //        }
     }
@@ -97,7 +117,7 @@ public class Push {
      * @param context
      * @return
      */
-    private static boolean shouldInit(Context context) {
+    public static boolean isMainProcess(Context context) {
         ActivityManager am = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE));
         List<ActivityManager.RunningAppProcessInfo> processInfos = am.getRunningAppProcesses();
         String mainProcessName = context.getPackageName();
@@ -111,8 +131,9 @@ public class Push {
     }
 
     public static void unregister(Context context) {
-        if (context == null)
+        if (context == null) {
             return;
+        }
         if (RomUtil.rom() == Target.EMUI) {
             EMHuaweiPushReceiver.clearPushInterface();
             HMSAgent.Push.deleteToken(getToken(context).getToken(), rst -> {
@@ -121,13 +142,16 @@ public class Push {
         } else if (RomUtil.rom() == Target.MIUI) {
             MiuiReceiver.clearPushInterface();
             MiPushClient.unregisterPush(context);
+        } else if (RomUtil.rom() == Target.OPPO) {
+            OppoReceiver.clearPushInterface();
+            PushManager.getInstance().unRegister();
         } else {
             JPushReceiver.clearPushInterface();
             JPushInterface.stopPush(context);
         }
 //        if (RomUtil.rom() == Target.FLYME) {
 //            FlymeReceiver.clearPushInterface();
-//            com.meizu.cloud.pushsdk.PushManager.unRegister(context, Const.getFlyme_app_id(), Const.getFlyme_app_key());
+//            com.meizu.cloud.pushsdk.PushManager.unRegister(context, RomPushConst.getFlymeId(), RomPushConst.getFlymeKey());
 //            return;
 //        }
     }
@@ -137,12 +161,15 @@ public class Push {
      * @param pushInterface
      */
     public static void setPushInterface(PushInterface pushInterface) {
-        if (pushInterface == null)
+        if (pushInterface == null) {
             return;
+        }
         if (RomUtil.rom() == Target.EMUI) {
             EMHuaweiPushReceiver.registerInterface(pushInterface);
         } else if (RomUtil.rom() == Target.MIUI) {
             MiuiReceiver.registerInterface(pushInterface);
+        } else if (RomUtil.rom() == Target.OPPO) {
+            OppoReceiver.registerInterface(pushInterface);
         } else {
             JPushReceiver.registerInterface(pushInterface);
         }
@@ -156,7 +183,7 @@ public class Push {
      * @param context
      * @param uid
      */
-    public static void setAlias(final Context context, String uid) {
+    public static void setAlias(final Context context, @NonNull String uid) {
         if (TextUtils.isEmpty(uid))
             return;
         /*华为没有别名设置*/
@@ -169,6 +196,8 @@ public class Push {
 //        }
         if (RomUtil.rom() == Target.MIUI) {
             MiPushClient.setAlias(context, uid, null);
+        } else if (RomUtil.rom() == Target.OPPO) {
+            PushManager.getInstance().setAliases(Arrays.asList(uid));
         } else if (RomUtil.rom() != Target.EMUI) {
             JPushInterface.setAlias(context, uid, (i, s, set) -> {
                 if (i == 0) { // 这里极光规定0代表成功
@@ -180,15 +209,15 @@ public class Push {
             });
         }
 //        if (RomUtil.rom() == Target.FLYME) {
-//            com.meizu.cloud.pushsdk.PushManager.subScribeAlias(context, Const.getFlyme_app_id(), Const.getFlyme_app_key(), getToken(context).getToken(), alias);
+//            com.meizu.cloud.pushsdk.PushManager.subScribeAlias(context, RomPushConst.getFlymeId(), RomPushConst.getFlymeKey(), getToken(context).getToken(), alias);
 //            return;
 //        }
     }
 
     /*
-    * 取消别名
-    * */
-    public static void clearAlias(final Context context, String uid) {
+     * 取消别名
+     * */
+    public static void clearAlias(final Context context, @NonNull String uid) {
         /*华为没有别名设置*/
 //        if (RomUtil.rom() == Target.EMUI) {
 //            Map<String, String> tag = new HashMap<>();
@@ -199,6 +228,8 @@ public class Push {
 //        }
         if (RomUtil.rom() == Target.MIUI) {
             MiPushClient.unsetAlias(context, uid, null);
+        } else if (RomUtil.rom() == Target.OPPO) {
+            PushManager.getInstance().unsetAlias(uid);
         } else if (RomUtil.rom() != Target.EMUI) {
             JPushInterface.setAlias(context, "", (i, s, set) -> {
                 if (i == 0) { // 这里极光规定0代表成功
@@ -210,7 +241,7 @@ public class Push {
             });
         }
 //        if (RomUtil.rom() == Target.FLYME) {
-//            com.meizu.cloud.pushsdk.PushManager.subScribeAlias(context, Const.getFlyme_app_id(), Const.getFlyme_app_key(), getToken(context).getToken(), alias);
+//            com.meizu.cloud.pushsdk.PushManager.subScribeAlias(context, RomPushConst.getFlymeId(), RomPushConst.getFlymeKey(), getToken(context).getToken(), alias);
 //            return;
 //        }
     }
@@ -223,14 +254,29 @@ public class Push {
             return;
         if (RomUtil.rom() == Target.MIUI) {
             MiPushClient.subscribe(context, TextUtils.isEmpty(province) ? "" : province, TextUtils.isEmpty(city) ? "" : city);
+        } else if (RomUtil.rom() == Target.OPPO) {
+            ArrayList<String> strings = new ArrayList<>();
+            if (!TextUtils.isEmpty(province)) {
+                strings.add(province);
+            }
+            if (!TextUtils.isEmpty(city)) {
+                strings.add(city);
+            }
+            if (!TextUtils.isEmpty(appVersion)) {
+                strings.add(appVersion);
+            }
+            PushManager.getInstance().setTags(strings);
         } else if (RomUtil.rom() != Target.EMUI) {
             Set<String> set = new HashSet<>();
-            if (!TextUtils.isEmpty(province))
+            if (!TextUtils.isEmpty(province)) {
                 set.add(province);
-            if (!TextUtils.isEmpty(city))
+            }
+            if (!TextUtils.isEmpty(city)) {
                 set.add(city);
-            if (!TextUtils.isEmpty(appVersion))
+            }
+            if (!TextUtils.isEmpty(appVersion)) {
                 set.add(appVersion);
+            }
             JPushInterface.setTags(context, set, (i, s, set1) -> {
                 if (i == 0) { // 这里极光规定0代表成功
                     if (JPushReceiver.getPushInterface() != null) {
@@ -248,8 +294,9 @@ public class Push {
      * @return
      */
     public static TokenModel getToken(Context context) {
-        if (context == null)
+        if (context == null) {
             return null;
+        }
         TokenModel result = new TokenModel();
         result.setTarget(RomUtil.rom());
         if (RomUtil.rom() == Target.EMUI) {
@@ -258,6 +305,8 @@ public class Push {
         } else if (RomUtil.rom() == Target.MIUI) {
             String regId = MiPushClient.getRegId(context);
             result.setToken(regId);
+        } else if (RomUtil.rom() == Target.OPPO) {
+            result.setToken(PushManager.getInstance().getRegisterID());
         } else {
             result.setToken(JPushInterface.getRegistrationID(context));
         }
@@ -269,8 +318,9 @@ public class Push {
      * 停止推送
      */
     public static void pause(Context context) {
-        if (context == null)
+        if (context == null) {
             return;
+        }
         if (RomUtil.rom() == Target.EMUI) {
             if (EMHuaweiPushReceiver.getPushState()) {
                 HMSAgent.Push.enableReceiveNormalMsg(false, rst -> {
@@ -288,6 +338,11 @@ public class Push {
             if (MiuiReceiver.getPushInterface() != null) {
                 MiuiReceiver.getPushInterface().onPaused(context);
             }
+        } else if (RomUtil.rom() == Target.OPPO) {
+            PushManager.getInstance().pausePush();
+            if (OppoReceiver.getPushInterface() != null) {
+                OppoReceiver.getPushInterface().onPaused(context);
+            }
         } else if (!JPushInterface.isPushStopped(context)) {
             JPushInterface.stopPush(context);
             if (JPushReceiver.getPushInterface() != null) {
@@ -300,8 +355,9 @@ public class Push {
      * 开始推送
      */
     public static void resume(Context context) {
-        if (context == null)
+        if (context == null) {
             return;
+        }
         if (RomUtil.rom() == Target.EMUI) {
             if (EMHuaweiPushReceiver.getPushState()) {
                 HMSAgent.Push.enableReceiveNormalMsg(true, rst -> {
@@ -319,6 +375,11 @@ public class Push {
             if (MiuiReceiver.getPushInterface() != null) {
                 MiuiReceiver.getPushInterface().onResume(context);
             }
+        } else if (RomUtil.rom() == Target.OPPO) {
+            PushManager.getInstance().resumePush();
+            if (OppoReceiver.getPushInterface() != null) {
+                OppoReceiver.getPushInterface().onResume(context);
+            }
         } else if (JPushInterface.isPushStopped(context)) {
             JPushInterface.resumePush(context);
             if (JPushReceiver.getPushInterface() != null) {
@@ -328,9 +389,9 @@ public class Push {
     }
 
     /*
-    * 华为连接推送渠道
-    * 华为要求为activity
-    * */
+     * 华为连接推送渠道
+     * 华为要求为activity
+     * */
     public static void connect(Activity activity) {
         if (RomUtil.rom() == Target.EMUI) {
             HMSAgent.connect(activity, rst -> {

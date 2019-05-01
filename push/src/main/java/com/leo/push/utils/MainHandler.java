@@ -6,12 +6,12 @@ import android.os.Looper;
  * Created by LEO
  * on 2017/7/3.
  */
-public class JHandler {
+public class MainHandler {
     private static android.os.Handler mHandler = null;
 
     public static android.os.Handler handler() {
         if (mHandler == null) {
-            synchronized (JHandler.class) {
+            synchronized (MainHandler.class) {
                 mHandler = new android.os.Handler(Looper.getMainLooper());
             }
         }

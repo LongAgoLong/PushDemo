@@ -15,8 +15,8 @@ import org.json.JSONObject;
  * on 2017/7/3.
  * 推送结果回调处理类
  */
-public class PushService implements PushInterface {
-    private static final String TAG = PushService.class.getSimpleName();
+public class RomPushService implements PushInterface {
+    private static final String TAG = RomPushService.class.getSimpleName();
     public static final String EXTRA_EXTRA = "com.push.android.EXTRA";
 
     @Override
@@ -50,7 +50,7 @@ public class PushService implements PushInterface {
         String messageExtra = message.getExtra();
         try {
             Bundle bundle = new Bundle();
-            bundle.putString(PushService.EXTRA_EXTRA, messageExtra);
+            bundle.putString(RomPushService.EXTRA_EXTRA, messageExtra);
             JSONObject json = new JSONObject(messageExtra);
             // 此处自行处理数据
 

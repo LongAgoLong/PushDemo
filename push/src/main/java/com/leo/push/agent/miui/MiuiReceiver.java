@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.leo.push.common.Message;
 import com.leo.push.common.PushInterface;
-import com.leo.push.utils.JHandler;
+import com.leo.push.utils.MainHandler;
 import com.leo.push.utils.JsonUtils;
 import com.leo.push.utils.Target;
 import com.xiaomi.mipush.sdk.ErrorCode;
@@ -77,7 +77,7 @@ public class MiuiReceiver extends PushMessageReceiver {
                 Log.i(TAG, "onReceivePassThroughMessage: " + e.toString());
                 result.setExtra("{}");
             }
-            JHandler.handler().post(() -> mPushInterface.onCustomMessage(context, result));
+            MainHandler.handler().post(() -> mPushInterface.onCustomMessage(context, result));
         }
 
 
@@ -105,7 +105,7 @@ public class MiuiReceiver extends PushMessageReceiver {
                 String extra = JsonUtils.transformMIUIMessage(extraMap);
                 if (null != extra) {
                     result.setExtra(extra);
-                    JHandler.handler().post(() -> mPushInterface.onMessageClicked(context, result));
+                    MainHandler.handler().post(() -> mPushInterface.onMessageClicked(context, result));
                 }
             } catch (Exception e) {
                 Log.e(TAG, "onNotificationMessageClicked: " + e.toString());
@@ -137,7 +137,7 @@ public class MiuiReceiver extends PushMessageReceiver {
                 Log.i(TAG, "onReceivePassThroughMessage: " + e.toString());
                 result.setExtra("{}");
             }
-            JHandler.handler().post(() -> mPushInterface.onMessage(context, result));
+            MainHandler.handler().post(() -> mPushInterface.onMessage(context, result));
         }
     }
 
@@ -151,7 +151,7 @@ public class MiuiReceiver extends PushMessageReceiver {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
                 mRegId = cmdArg1;
                 if (mPushInterface != null) {
-                    JHandler.handler().post(new Runnable() {
+                    MainHandler.handler().post(new Runnable() {
                         @Override
                         public void run() {
                             mPushInterface.onRegister(context, mRegId);
@@ -162,7 +162,7 @@ public class MiuiReceiver extends PushMessageReceiver {
                 if (message.getResultCode() == ErrorCode.SUCCESS) {
                     mAlias = cmdArg1;
                     if (mPushInterface != null) {
-                        JHandler.handler().post(new Runnable() {
+                        MainHandler.handler().post(new Runnable() {
                             @Override
                             public void run() {
                                 mPushInterface.onAlias(context, mAlias);

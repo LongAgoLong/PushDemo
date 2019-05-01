@@ -34,9 +34,9 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
     api 'com.huawei.android.hms:push:2.6.1.301'
     api files('libs/jcore-android-1.2.6.jar')
     api files('libs/jpush-android-3.1.8.jar')
     api files('libs/MiPush_SDK_Client_3_6_9.jar')
+    implementation files('libs/com.coloros.mcssdk.jar')
 }

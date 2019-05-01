@@ -245,7 +245,7 @@ public final class HMSAgent implements INoProguard {
     }
 
     /**
-     * push接口封装 | Push interface Encapsulation
+     * push接口封装 | RomPush interface Encapsulation
      */
     public static final class Push {
         /**
@@ -295,7 +295,7 @@ public final class HMSAgent implements INoProguard {
         }
 
         /**
-         * 请求push协议展示 | Request Push Protocol Display
+         * 请求push协议展示 | Request RomPush Protocol Display
          * @param handler 方法调用结果回调（结果会在主线程回调）| Method call result Callback (result will be callback on main thread)
          */
         public static void queryAgreement(QueryAgreementHandler handler){

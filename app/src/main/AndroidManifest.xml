@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.leo.pushdemo">
     <!-- 公用权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -18,26 +19,31 @@
     <uses-permission android:name="com.huawei.pushagent.permission.RICHMEDIA_PROVIDER" />
 
     <!--小米推送权限-->
-    <permission android:name="${PNAME}.permission.MIPUSH_RECEIVE"
+    <permission
+        android:name="${PNAME}.permission.MIPUSH_RECEIVE"
         android:protectionLevel="signature" />
     <uses-permission android:name="${PNAME}.permission.MIPUSH_RECEIVE" />
+    <!--oppo推送权限-->
+    <uses-permission android:name="com.coloros.mcs.permission.RECIEVE_MCS_MESSAGE" />
 
     <!-- 极光推送权限 -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
     <permission
         android:name="${PNAME}.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
 
     <application
+        android:name=".RomPushApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".PushApplication"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <!--
         ///////////////////////////
@@ -197,6 +203,18 @@
             </intent-filter>
         </receiver>
 
+        <!--
+        ///////////////////////////
+        //   以下为oppo推送SDK注册  //
+        ///////////////////////////
+        -->
+        <service
+            android:name="com.leo.push.agent.oppo.OppoReceiver"
+            android:permission="com.coloros.mcs.permission.SEND_MCS_MESSAGE">
+            <intent-filter>
+                <action android:name="com.coloros.mcs.action.RECEIVE_MCS_MESSAGE" />
+            </intent-filter>
+        </service>
         <!--
         ///////////////////////////
         //   以下为极光推送SDK注册  //

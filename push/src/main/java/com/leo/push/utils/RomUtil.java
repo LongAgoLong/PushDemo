@@ -1,7 +1,11 @@
 package com.leo.push.utils;
 
+import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
+
+import com.coloros.mcssdk.PushManager;
+import com.leo.push.agent.RomPush;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -100,6 +104,19 @@ public class RomUtil {
         }
     }
 
+    /**
+     * OPPO rom
+     *
+     * @return
+     */
+    private static boolean isOppo() {
+        Context context = RomPush.getContext();
+        if (null != context) {
+            return PushManager.isSupportPush(context);
+        }
+        return false;
+    }
+
     @Target
     public static int rom() {
         if (mTarget != 0) {
@@ -111,6 +128,10 @@ public class RomUtil {
         }
         if (isMIUI()) {
             mTarget = Target.MIUI;
+            return mTarget;
+        }
+        if (isOppo()) {
+            mTarget = Target.OPPO;
             return mTarget;
         }
         if (isFlyme()) {
