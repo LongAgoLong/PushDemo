@@ -200,7 +200,7 @@ public final class HMSAgent implements INoProguard {
             return false;
         }
 
-        HMSAgentLog.i("init HMSAgent " + CURVER + " with hmssdkver " + HuaweiApiAvailability.HMS_SDK_VERSION_CODE);
+        HMSAgentPushLog.i("init HMSAgent " + CURVER + " with hmssdkver " + HuaweiApiAvailability.HMS_SDK_VERSION_CODE);
 
         // 初始化activity管理类 | Initializing Activity Management Classes
         ActivityMgr.INST.init(appTmp, activityTmp);
@@ -215,7 +215,7 @@ public final class HMSAgent implements INoProguard {
      * 释放资源，这里一般不需要调用 | Frees resources, which are generally not required to call
      */
     public static void destroy() {
-        HMSAgentLog.i("destroy HMSAgent");
+        HMSAgentPushLog.i("destroy HMSAgent");
         ActivityMgr.INST.release();
         ApiClientMgr.INST.release();
     }
@@ -228,7 +228,7 @@ public final class HMSAgent implements INoProguard {
      * @param callback 连接结果回调 | Connection Result Callback
      */
     public static void connect(Activity activity, final ConnectHandler callback) {
-        HMSAgentLog.i("start connect");
+        HMSAgentPushLog.i("start connect");
         ApiClientMgr.INST.connect(new IClientConnectCallback() {
             @Override
             public void onConnect(final int rst, HuaweiApiClient client) {

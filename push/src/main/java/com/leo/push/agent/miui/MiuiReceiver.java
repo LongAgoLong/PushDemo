@@ -8,6 +8,7 @@ import com.leo.push.common.Message;
 import com.leo.push.common.PushInterface;
 import com.leo.push.utils.MainHandler;
 import com.leo.push.utils.JsonUtils;
+import com.leo.push.utils.PushLog;
 import com.leo.push.utils.Target;
 import com.xiaomi.mipush.sdk.ErrorCode;
 import com.xiaomi.mipush.sdk.MiPushClient;
@@ -74,7 +75,7 @@ public class MiuiReceiver extends PushMessageReceiver {
 //                result.setExtra(JsonUtils.setJson(message.getExtra()).toString());
                 result.setExtra(message.getContent());
             } catch (Exception e) {
-                Log.i(TAG, "onReceivePassThroughMessage: " + e.toString());
+                PushLog.i(TAG, "onReceivePassThroughMessage: " + e.toString());
                 result.setExtra("{}");
             }
             MainHandler.handler().post(() -> mPushInterface.onCustomMessage(context, result));
@@ -102,7 +103,7 @@ public class MiuiReceiver extends PushMessageReceiver {
             result.setTarget(Target.MIUI);
             try {
                 Map<String, String> extraMap = message.getExtra();
-                String extra = JsonUtils.transformMIUIMessage(extraMap);
+                String extra = JsonUtils.transformMapMsg(extraMap);
                 if (null != extra) {
                     result.setExtra(extra);
                     MainHandler.handler().post(() -> mPushInterface.onMessageClicked(context, result));
@@ -134,7 +135,7 @@ public class MiuiReceiver extends PushMessageReceiver {
                 result.setExtra(JsonUtils.setJson(message.getExtra()).toString());
 //                result.setExtra(message.getContent());
             } catch (Exception e) {
-                Log.i(TAG, "onReceivePassThroughMessage: " + e.toString());
+                PushLog.i(TAG, "onReceivePassThroughMessage: " + e.toString());
                 result.setExtra("{}");
             }
             MainHandler.handler().post(() -> mPushInterface.onMessage(context, result));

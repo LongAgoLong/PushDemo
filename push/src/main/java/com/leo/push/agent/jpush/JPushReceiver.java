@@ -39,19 +39,19 @@ public class JPushReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
-        Log.i(TAG, "[JPushReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
+        PushLog.i(TAG, "[JPushReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
         int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
         String messageId = bundle.getString(JPushInterface.EXTRA_MSG_ID);
         String extraMessage = bundle.getString(JPushInterface.EXTRA_EXTRA);
 
         if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
             String regId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);
-            Log.i(TAG, "[JPushReceiver] 接收Registration Id : " + regId);
+            PushLog.i(TAG, "[JPushReceiver] 接收Registration Id : " + regId);
             if (mPushInterface != null)
                 mPushInterface.onRegister(context, regId);
 
         } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
-            Log.i(TAG, "[JPushReceiver] 接收到推送下来的自定义消息: " + extraMessage);
+            PushLog.i(TAG, "[JPushReceiver] 接收到推送下来的自定义消息: " + extraMessage);
             if (mPushInterface != null) {
                 Message message = new Message();
                 message.setTitle(bundle.getString(JPushInterface.EXTRA_TITLE));
@@ -64,9 +64,9 @@ public class JPushReceiver extends BroadcastReceiver {
 
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
 
-            Log.i(TAG, "[JPushReceiver] 接收到推送下来的通知");
+            PushLog.i(TAG, "[JPushReceiver] 接收到推送下来的通知");
 
-            Log.i(TAG, "[JPushReceiver] 接收到推送下来的通知的ID: " + notifactionId);
+            PushLog.i(TAG, "[JPushReceiver] 接收到推送下来的通知的ID: " + notifactionId);
             if (mPushInterface != null) {
                 Message message = new Message();
                 message.setNotifyID(notifactionId);
@@ -79,7 +79,7 @@ public class JPushReceiver extends BroadcastReceiver {
             }
 
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
-            Log.i(TAG, "[JPushReceiver] 用户点击打开了通知");
+            PushLog.i(TAG, "[JPushReceiver] 用户点击打开了通知");
             if (mPushInterface != null) {
                 Message message = new Message();
                 message.setNotifyID(notifactionId);
@@ -93,14 +93,14 @@ public class JPushReceiver extends BroadcastReceiver {
 
 
         } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {
-            Log.i(TAG, "[JPushReceiver] 用户收到到RICH PUSH CALLBACK: " + bundle.getString(JPushInterface.EXTRA_EXTRA));
+            PushLog.i(TAG, "[JPushReceiver] 用户收到到RICH PUSH CALLBACK: " + bundle.getString(JPushInterface.EXTRA_EXTRA));
             //在这里根据 JPushInterface.EXTRA_EXTRA 的内容处理代码，比如打开新的Activity， 打开一个网页等..
 
         } else if (JPushInterface.ACTION_CONNECTION_CHANGE.equals(intent.getAction())) {
             boolean connected = intent.getBooleanExtra(JPushInterface.EXTRA_CONNECTION_CHANGE, false);
-            Log.i(TAG, "[JPushReceiver]" + intent.getAction() + " connected state change to " + connected);
+            PushLog.i(TAG, "[JPushReceiver]" + intent.getAction() + " connected state change to " + connected);
         } else {
-            Log.i(TAG, "[JPushReceiver] Unhandled intent - " + intent.getAction());
+            PushLog.i(TAG, "[JPushReceiver] Unhandled intent - " + intent.getAction());
         }
     }
 
@@ -114,7 +114,7 @@ public class JPushReceiver extends BroadcastReceiver {
                 sb.append("\nkey:").append(key).append(", value:").append(bundle.getBoolean(key));
             } else if (key.equals(JPushInterface.EXTRA_EXTRA)) {
                 if (bundle.getString(JPushInterface.EXTRA_EXTRA).isEmpty()) {
-                    Log.i(TAG, "This message has no Extra data");
+                    PushLog.i(TAG, "This message has no Extra data");
                     continue;
                 }
 
@@ -128,7 +128,7 @@ public class JPushReceiver extends BroadcastReceiver {
                                 myKey).append(" - ").append(json.optString(myKey) + "]");
                     }
                 } catch (JSONException e) {
-                    Log.i(TAG, "Get message extra JSON error!");
+                    PushLog.i(TAG, "Get message extra JSON error!");
                 }
 
             } else {

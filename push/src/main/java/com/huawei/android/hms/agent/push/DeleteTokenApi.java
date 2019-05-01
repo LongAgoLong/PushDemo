@@ -65,7 +65,7 @@ public class DeleteTokenApi extends BaseApiAgent {
     }
 
     void onDeleteTokenResult(int rstCode) {
-        HMSAgentLog.i("deleteToken:callback=" + StrUtils.objDesc(handler) +" retCode=" + rstCode);
+        HMSAgentPushLog.i("deleteToken:callback=" + StrUtils.objDesc(handler) +" retCode=" + rstCode);
         if (handler != null) {
             new Handler(Looper.getMainLooper()).post(new CallbackCodeRunnable(handler, rstCode));
             handler = null;
@@ -78,7 +78,7 @@ public class DeleteTokenApi extends BaseApiAgent {
      * @param token 要删除的token
      */
     public void deleteToken(String token, DeleteTokenHandler handler) {
-        HMSAgentLog.i("deleteToken:token:" + StrUtils.objDesc(token) + " handler=" + StrUtils.objDesc(handler));
+        HMSAgentPushLog.i("deleteToken:token:" + StrUtils.objDesc(token) + " handler=" + StrUtils.objDesc(handler));
         this.token = token;
         this.handler = handler;
         connect();

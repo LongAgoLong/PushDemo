@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.coloros.mcssdk.PushManager;
 import com.leo.push.agent.RomPush;
+import com.vivo.push.PushClient;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -117,6 +118,14 @@ public class RomUtil {
         return false;
     }
 
+    private static boolean isVivo() {
+        Context context = RomPush.getContext();
+        if (null != context) {
+            return PushClient.getInstance(context).isSupport();
+        }
+        return false;
+    }
+
     @Target
     public static int rom() {
         if (mTarget != 0) {
@@ -132,6 +141,10 @@ public class RomUtil {
         }
         if (isOppo()) {
             mTarget = Target.OPPO;
+            return mTarget;
+        }
+        if (isVivo()) {
+            mTarget = Target.VIVO;
             return mTarget;
         }
         if (isFlyme()) {

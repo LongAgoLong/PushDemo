@@ -38,5 +38,6 @@ dependencies {
     api files('libs/jcore-android-1.2.6.jar')
     api files('libs/jpush-android-3.1.8.jar')
     api files('libs/MiPush_SDK_Client_3_6_9.jar')
-    implementation files('libs/com.coloros.mcssdk.jar')
+    api files('libs/com.coloros.mcssdk.jar')
+    api files('libs/pushsdk_v2.3.4.jar')
 }

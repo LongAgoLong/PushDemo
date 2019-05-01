@@ -57,7 +57,7 @@ public final class HMSAgentLog {
         if (logCallback != null) {
             logCallback.logI("HMSAgent", sb.toString());
         } else {
-            Log.i("HMSAgent", sb.toString());
+            PushLog.i("HMSAgent", sb.toString());
         }
     }
 

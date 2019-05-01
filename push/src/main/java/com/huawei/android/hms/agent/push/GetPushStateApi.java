@@ -48,7 +48,7 @@ public class GetPushStateApi extends BaseApiAgent {
     }
 
     void onGetPushStateResult(int rstCode) {
-        HMSAgentLog.i("getPushState:callback=" + StrUtils.objDesc(handler) +" retCode=" + rstCode);
+        HMSAgentPushLog.i("getPushState:callback=" + StrUtils.objDesc(handler) +" retCode=" + rstCode);
         if (handler != null) {
             new Handler(Looper.getMainLooper()).post(new CallbackCodeRunnable(handler, rstCode));
             handler = null;
@@ -60,7 +60,7 @@ public class GetPushStateApi extends BaseApiAgent {
      * 要监听的广播，请参见HMS-SDK开发准备中PushReceiver的注册
      */
     public void getPushState(GetPushStateHandler handler) {
-        HMSAgentLog.i("getPushState:handler=" + StrUtils.objDesc(handler));
+        HMSAgentPushLog.i("getPushState:handler=" + StrUtils.objDesc(handler));
         this.handler = handler;
         connect();
     }

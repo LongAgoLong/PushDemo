@@ -48,7 +48,7 @@ public class QueryAgreementApi extends BaseApiAgent {
     }
 
     void onQueryAgreementResult(int rstCode) {
-        HMSAgentLog.i("queryAgreement:callback=" + StrUtils.objDesc(handler) +" retCode=" + rstCode);
+        HMSAgentPushLog.i("queryAgreement:callback=" + StrUtils.objDesc(handler) +" retCode=" + rstCode);
         if (handler != null) {
             new Handler(Looper.getMainLooper()).post(new CallbackCodeRunnable(handler, rstCode));
             handler = null;
@@ -59,7 +59,7 @@ public class QueryAgreementApi extends BaseApiAgent {
      * 请求push协议展示
      */
     public void queryAgreement(QueryAgreementHandler handler) {
-        HMSAgentLog.i("queryAgreement:handler=" + StrUtils.objDesc(handler));
+        HMSAgentPushLog.i("queryAgreement:handler=" + StrUtils.objDesc(handler));
         this.handler = handler;
         connect();
     }

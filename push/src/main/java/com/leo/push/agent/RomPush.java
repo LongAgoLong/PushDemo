@@ -16,11 +16,15 @@ import com.leo.push.agent.emui.EMHuaweiPushReceiver;
 import com.leo.push.agent.jpush.JPushReceiver;
 import com.leo.push.agent.miui.MiuiReceiver;
 import com.leo.push.agent.oppo.OppoReceiver;
+import com.leo.push.agent.vivo.VivoReceiver;
 import com.leo.push.common.RomPushConst;
 import com.leo.push.common.PushInterface;
 import com.leo.push.model.TokenModel;
+import com.leo.push.utils.PushLog;
 import com.leo.push.utils.RomUtil;
 import com.leo.push.utils.Target;
+import com.vivo.push.IPushActionListener;
+import com.vivo.push.PushClient;
 import com.xiaomi.channel.commonutils.logger.LoggerInterface;
 import com.xiaomi.mipush.sdk.Logger;
 import com.xiaomi.mipush.sdk.MiPushClient;
@@ -50,6 +54,25 @@ public class RomPush {
     }
 
     /**
+     * 判断是否主进程
+     *
+     * @param context
+     * @return
+     */
+    public static boolean isMainProcess(Context context) {
+        ActivityManager am = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE));
+        List<ActivityManager.RunningAppProcessInfo> processInfos = am.getRunningAppProcesses();
+        String mainProcessName = context.getPackageName();
+        int myPid = Process.myPid();
+        for (ActivityManager.RunningAppProcessInfo info : processInfos) {
+            if (info.pid == myPid && mainProcessName.equals(info.processName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 注册
      *
      * @param context
@@ -57,6 +80,7 @@ public class RomPush {
      * @param pushInterface
      */
     public static void register(Context context, boolean debug, PushInterface pushInterface) {
+        PushLog.setIsDebug(debug);
         if (context == null) {
             return;
         }
@@ -80,12 +104,12 @@ public class RomPush {
 
                     @Override
                     public void log(String content, Throwable t) {
-                        Log.i(TAG, "content" + content + " exception: " + t.toString());
+                        PushLog.i(TAG, "content" + content + " exception: " + t.toString());
                     }
 
                     @Override
                     public void log(String content) {
-                        Log.i(TAG, "miui: " + content);
+                        PushLog.i(TAG, "miui: " + content);
                     }
                 };
                 Logger.setLogger(context, newLogger);
@@ -95,6 +119,18 @@ public class RomPush {
                 OppoReceiver.registerInterface(pushInterface);
             }
             PushManager.getInstance().register(context, RomPushConst.getOppoKey(), RomPushConst.getOppoSecret(), new PushAdapter());
+        } else if (RomUtil.rom() == Target.VIVO) {
+            if (pushInterface != null) {
+                VivoReceiver.registerInterface(pushInterface);
+            }
+            PushClient.getInstance(context).initialize();
+            PushClient.getInstance(context).turnOnPush(state -> {
+                if (state != 0) {
+                    PushLog.i("vivoPush", "打开push异常[" + state + "]");
+                } else {
+                    PushLog.i("vivoPush", "打开push成功");
+                }
+            });
         } else {
             if (pushInterface != null) {
                 JPushReceiver.registerInterface(pushInterface);
@@ -109,25 +145,6 @@ public class RomPush {
 //            com.meizu.cloud.pushsdk.PushManager.register(context, RomPushConst.getFlymeId(), RomPushConst.getFlymeKey());
 //            return;
 //        }
-    }
-
-    /**
-     * 用于小米推送的注册
-     *
-     * @param context
-     * @return
-     */
-    public static boolean isMainProcess(Context context) {
-        ActivityManager am = ((ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE));
-        List<ActivityManager.RunningAppProcessInfo> processInfos = am.getRunningAppProcesses();
-        String mainProcessName = context.getPackageName();
-        int myPid = Process.myPid();
-        for (ActivityManager.RunningAppProcessInfo info : processInfos) {
-            if (info.pid == myPid && mainProcessName.equals(info.processName)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public static void unregister(Context context) {
@@ -145,6 +162,15 @@ public class RomPush {
         } else if (RomUtil.rom() == Target.OPPO) {
             OppoReceiver.clearPushInterface();
             PushManager.getInstance().unRegister();
+        } else if (RomUtil.rom() == Target.VIVO) {
+            VivoReceiver.clearPushInterface();
+            PushClient.getInstance(context).turnOffPush(state -> {
+                if (state != 0) {
+                    PushLog.i("vivoPush", "关闭push异常[" + state + "]");
+                } else {
+                    PushLog.i("vivoPush", "关闭push成功");
+                }
+            });
         } else {
             JPushReceiver.clearPushInterface();
             JPushInterface.stopPush(context);
@@ -160,16 +186,15 @@ public class RomPush {
     /**
      * @param pushInterface
      */
-    public static void setPushInterface(PushInterface pushInterface) {
-        if (pushInterface == null) {
-            return;
-        }
+    public static void setPushInterface(@NonNull PushInterface pushInterface) {
         if (RomUtil.rom() == Target.EMUI) {
             EMHuaweiPushReceiver.registerInterface(pushInterface);
         } else if (RomUtil.rom() == Target.MIUI) {
             MiuiReceiver.registerInterface(pushInterface);
         } else if (RomUtil.rom() == Target.OPPO) {
             OppoReceiver.registerInterface(pushInterface);
+        } else if (RomUtil.rom() == Target.VIVO) {
+            VivoReceiver.registerInterface(pushInterface);
         } else {
             JPushReceiver.registerInterface(pushInterface);
         }
@@ -198,11 +223,19 @@ public class RomPush {
             MiPushClient.setAlias(context, uid, null);
         } else if (RomUtil.rom() == Target.OPPO) {
             PushManager.getInstance().setAliases(Arrays.asList(uid));
+        } else if (RomUtil.rom() == Target.VIVO) {
+            PushClient.getInstance(context).bindAlias(uid, state -> {
+                if (state != 0) {
+                    PushLog.i("vivoPush", "设置别名异常[\" + state + \"]");
+                } else {
+                    PushLog.i("vivoPush", "设置别名成功");
+                }
+            });
         } else if (RomUtil.rom() != Target.EMUI) {
             JPushInterface.setAlias(context, uid, (i, s, set) -> {
                 if (i == 0) { // 这里极光规定0代表成功
                     if (JPushReceiver.getPushInterface() != null) {
-                        Log.i(TAG, "JPushInterface.setAlias");
+                        PushLog.i(TAG, "JPushInterface.setAlias");
                         JPushReceiver.getPushInterface().onAlias(context, s);
                     }
                 }
@@ -230,11 +263,19 @@ public class RomPush {
             MiPushClient.unsetAlias(context, uid, null);
         } else if (RomUtil.rom() == Target.OPPO) {
             PushManager.getInstance().unsetAlias(uid);
+        } else if (RomUtil.rom() == Target.VIVO) {
+            PushClient.getInstance(context).unBindAlias(uid, state -> {
+                if (state != 0) {
+                    PushLog.i("vivoPush", "取消别名异常[\" + state + \"]");
+                } else {
+                    PushLog.i("vivoPush", "取消别名成功");
+                }
+            });
         } else if (RomUtil.rom() != Target.EMUI) {
             JPushInterface.setAlias(context, "", (i, s, set) -> {
                 if (i == 0) { // 这里极光规定0代表成功
                     if (JPushReceiver.getPushInterface() != null) {
-                        Log.i(TAG, "JPushInterface.setAlias");
+                        PushLog.i(TAG, "JPushInterface.setAlias");
                         JPushReceiver.getPushInterface().onAlias(context, s);
                     }
                 }
@@ -266,6 +307,34 @@ public class RomPush {
                 strings.add(appVersion);
             }
             PushManager.getInstance().setTags(strings);
+        } else if (RomUtil.rom() == Target.VIVO) {
+            if (!TextUtils.isEmpty(province)) {
+                PushClient.getInstance(context).setTopic(province, state -> {
+                    if (state != 0) {
+                        PushLog.i("vivoPush", "设置标签异常[" + state + "]");
+                    } else {
+                        PushLog.i("vivoPush", "设置标签成功");
+                    }
+                });
+            }
+            if (!TextUtils.isEmpty(city)) {
+                PushClient.getInstance(context).setTopic(province, state -> {
+                    if (state != 0) {
+                        PushLog.i("vivoPush", "设置标签异常[" + state + "]");
+                    } else {
+                        PushLog.i("vivoPush", "设置标签成功");
+                    }
+                });
+            }
+            if (!TextUtils.isEmpty(appVersion)) {
+                PushClient.getInstance(context).setTopic(province, state -> {
+                    if (state != 0) {
+                        PushLog.i("vivoPush", "设置标签异常[" + state + "]");
+                    } else {
+                        PushLog.i("vivoPush", "设置标签成功");
+                    }
+                });
+            }
         } else if (RomUtil.rom() != Target.EMUI) {
             Set<String> set = new HashSet<>();
             if (!TextUtils.isEmpty(province)) {
@@ -280,7 +349,7 @@ public class RomPush {
             JPushInterface.setTags(context, set, (i, s, set1) -> {
                 if (i == 0) { // 这里极光规定0代表成功
                     if (JPushReceiver.getPushInterface() != null) {
-                        Log.i(TAG, "JPushInterface.setTags");
+                        PushLog.i(TAG, "JPushInterface.setTags");
                     }
                 }
             });
@@ -307,6 +376,8 @@ public class RomPush {
             result.setToken(regId);
         } else if (RomUtil.rom() == Target.OPPO) {
             result.setToken(PushManager.getInstance().getRegisterID());
+        } else if (RomUtil.rom() == Target.VIVO) {
+            result.setToken(PushClient.getInstance(context).getRegId());
         } else {
             result.setToken(JPushInterface.getRegistrationID(context));
         }
@@ -343,6 +414,14 @@ public class RomPush {
             if (OppoReceiver.getPushInterface() != null) {
                 OppoReceiver.getPushInterface().onPaused(context);
             }
+        } else if (RomUtil.rom() == Target.VIVO) {
+            PushClient.getInstance(context).turnOffPush(state -> {
+                if (state != 0) {
+                    PushLog.i("vivoPush", "关闭push异常[" + state + "]");
+                } else {
+                    PushLog.i("vivoPush", "关闭push成功");
+                }
+            });
         } else if (!JPushInterface.isPushStopped(context)) {
             JPushInterface.stopPush(context);
             if (JPushReceiver.getPushInterface() != null) {
@@ -380,6 +459,14 @@ public class RomPush {
             if (OppoReceiver.getPushInterface() != null) {
                 OppoReceiver.getPushInterface().onResume(context);
             }
+        } else if (RomUtil.rom() == Target.VIVO) {
+            PushClient.getInstance(context).turnOnPush(state -> {
+                if (state != 0) {
+                    PushLog.i("vivoPush", "打开push异常[" + state + "]");
+                } else {
+                    PushLog.i("vivoPush", "打开push成功");
+                }
+            });
         } else if (JPushInterface.isPushStopped(context)) {
             JPushInterface.resumePush(context);
             if (JPushReceiver.getPushInterface() != null) {
@@ -396,7 +483,7 @@ public class RomPush {
         if (RomUtil.rom() == Target.EMUI) {
             HMSAgent.connect(activity, rst -> {
                 if (0 == rst) {
-                    Log.i("HMSAgent", "HMS connect end:" + rst);
+                    PushLog.i("HMSAgent", "HMS connect end:" + rst);
                     HMSAgent.Push.getToken(rst1 -> {
                         HMSAgent.Push.enableReceiveNormalMsg(true, rst2 -> {
 

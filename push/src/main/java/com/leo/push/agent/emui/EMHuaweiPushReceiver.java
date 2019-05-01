@@ -46,7 +46,7 @@ public class EMHuaweiPushReceiver extends PushReceiver {
     public void onToken(final Context context, final String token, Bundle extras) {
         String belongId = extras.getString("belongId");
         String content = "获取token和belongId成功，token = " + token + ",belongId = " + belongId;
-        Log.i("HMSAgent", content);
+        PushLog.i("HMSAgent", content);
         mToken = token;
         PushTokenUtil.setPushToken(context, token);
         if (mPushInterface != null) {
@@ -57,14 +57,14 @@ public class EMHuaweiPushReceiver extends PushReceiver {
     @Override
     public void onPushMsg(Context context, byte[] bytes, String s) {
         super.onPushMsg(context, bytes, s);
-        Log.i("HMSAgent", "onPushMsg...");
+        PushLog.i("HMSAgent", "onPushMsg...");
     }
 
 
     @Override
     public boolean onPushMsg(final Context context, byte[] msg, Bundle bundle) {
         //这里是透传消息， msg是透传消息的字节数组 bundle字段没用
-        Log.i("HMSAgent", "onPushMsg: " + new String(msg));
+        PushLog.i("HMSAgent", "onPushMsg: " + new String(msg));
         try {
             String content = new String(msg, "UTF-8");
             if (mPushInterface != null) {
@@ -75,7 +75,7 @@ public class EMHuaweiPushReceiver extends PushReceiver {
                 message.setTarget(Target.EMUI);
                 MainHandler.handler().post(() -> mPushInterface.onCustomMessage(context, message));
             }
-            Log.i("RomPush", content);
+            PushLog.i("RomPush", content);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,7 +103,7 @@ public class EMHuaweiPushReceiver extends PushReceiver {
                     manager.cancel(notifyId);
             }
             String content = "收到通知附加消息： " + extras.getString(BOUND_KEY.pushMsgKey);
-            Log.i(TAG, content);
+            PushLog.i(TAG, content);
             try {
                 if (mPushInterface != null) {
                     final Message message = new Message();

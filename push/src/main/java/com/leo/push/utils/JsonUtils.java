@@ -18,6 +18,7 @@ import java.util.Set;
  * on 2017/7/3.
  */
 public class JsonUtils {
+    private static final String TAG = JsonUtils.class.getSimpleName();
 
     public static String getJson(final Bundle bundle) {
         if (bundle == null) return null;
@@ -149,9 +150,12 @@ public class JsonUtils {
         return jsonL;
     }
 
-    /*
+    /**
      * 华为数据类型转化
-     * */
+     *
+     * @param extrasString
+     * @return
+     */
     public static String transformEMUIMessage(String extrasString) {
         try {
             JSONObject jsonObject = new JSONObject();
@@ -170,19 +174,22 @@ public class JsonUtils {
         return null;
     }
 
-    /*
+    /**
      * 小米数据类型转化
-     * */
-    public static String transformMIUIMessage(Map<String, String> extra) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            for (Map.Entry<String, String> entry : extra.entrySet()) {
+     *
+     * @param extra
+     * @return
+     */
+    public static String transformMapMsg(Map<String, String> extra) {
+        JSONObject jsonObject = new JSONObject();
+        for (Map.Entry<String, String> entry : extra.entrySet()) {
+            try {
                 jsonObject.put(entry.getKey(), entry.getValue());
+            } catch (Exception e) {
+                PushLog.i(TAG, e.toString());
             }
-            return jsonObject.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
+
         }
-        return null;
+        return jsonObject.toString();
     }
 }
