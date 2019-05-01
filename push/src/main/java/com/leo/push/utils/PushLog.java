@@ -8,12 +8,12 @@ public class PushLog {
     private static final String TAG = PushLog.class.getSimpleName();
 
     public static void setIsDebug(boolean isDebug) {
-        PushPushLog.isDebug = isDebug;
+        PushLog.isDebug = isDebug;
     }
 
     public static void i(@NonNull String tag, @NonNull String value) {
         if (!isDebug) {
-            PushLog.i(TAG + "_" + tag, value);
+            Log.i(TAG + "_" + tag, value);
         }
     }
 }

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.leo.push.common.Message;
 import com.leo.push.common.PushInterface;
+import com.leo.push.utils.PushLog;
 import com.leo.push.utils.Target;
 
 import org.json.JSONException;

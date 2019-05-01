@@ -9,11 +9,6 @@ import com.leo.push.utils.MainHandler;
 import com.vivo.push.model.UPSNotificationMessage;
 import com.vivo.push.sdk.OpenClientPushMessageReceiver;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Map;
-
 /**
  * vivo推送消息处理
  */
