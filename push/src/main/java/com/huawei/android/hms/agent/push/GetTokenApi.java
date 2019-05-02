@@ -17,12 +17,13 @@ import com.huawei.hms.support.api.client.Status;
 import com.huawei.hms.support.api.entity.core.CommonCode;
 import com.huawei.hms.support.api.push.HuaweiPush;
 import com.huawei.hms.support.api.push.TokenResult;
+import com.leo.push.utils.PushLog;
 
 /**
  * 获取token的push接口，token的结果通过广播进行接收。
  */
 public class GetTokenApi extends BaseApiAgent {
-
+    private static final String TAG = GetTokenApi.class.getSimpleName();
     /**
      * client 无效最大尝试次数
      */
@@ -86,11 +87,12 @@ public class GetTokenApi extends BaseApiAgent {
     /**
      * 获取pushtoken接口调用回调
      * pushtoken通过广播下发，要监听的广播，请参见HMS-SDK开发准备中PushReceiver的注册
+     *
      * @param rstCode 结果码
-     * @param result 调用获取pushtoken接口的结果
+     * @param result  调用获取pushtoken接口的结果
      */
     void onPushTokenResult(int rstCode, TokenResult result) {
-        HMSAgentPushLog.i("getToken:callback=" + StrUtils.objDesc(handler) +" retCode=" + rstCode);
+        PushLog.i(TAG, "getToken:callback=" + StrUtils.objDesc(handler) + " retCode=" + rstCode);
         if (handler != null) {
             new Handler(Looper.getMainLooper()).post(new CallbackCodeRunnable(handler, rstCode));
             handler = null;
@@ -101,10 +103,11 @@ public class GetTokenApi extends BaseApiAgent {
     /**
      * 获取pushtoken接口
      * pushtoken通过广播下发，要监听的广播，请参见HMS-SDK开发准备中PushReceiver的注册
+     *
      * @param handler pushtoken接口调用回调
      */
     public void getToken(GetTokenHandler handler) {
-        HMSAgentPushLog.i("getToken:handler=" + StrUtils.objDesc(handler));
+        PushLog.i(TAG, "getToken:handler=" + StrUtils.objDesc(handler));
         this.handler = handler;
         retryTimes = MAX_RETRY_TIMES;
         connect();

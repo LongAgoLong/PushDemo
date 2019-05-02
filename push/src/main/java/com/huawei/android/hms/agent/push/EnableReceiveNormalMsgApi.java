@@ -13,12 +13,13 @@ import com.huawei.android.hms.agent.common.ThreadUtil;
 import com.huawei.android.hms.agent.push.handler.EnableReceiveNormalMsgHandler;
 import com.huawei.hms.api.HuaweiApiClient;
 import com.huawei.hms.support.api.push.HuaweiPush;
+import com.leo.push.utils.PushLog;
 
 /**
  * 打开透传消息开关的接口。
  */
 public class EnableReceiveNormalMsgApi extends BaseApiAgent {
-
+    private static final String TAG = EnableReceiveNormalMsgApi.class.getSimpleName();
     /**
      * 是否打开开关
      */
@@ -54,7 +55,7 @@ public class EnableReceiveNormalMsgApi extends BaseApiAgent {
     }
 
     void onEnableReceiveNormalMsgResult(int rstCode) {
-        HMSAgentPushLog.i("enableReceiveNormalMsg:callback=" + StrUtils.objDesc(handler) +" retCode=" + rstCode);
+        PushLog.i(TAG, "enableReceiveNormalMsg:callback=" + StrUtils.objDesc(handler) + " retCode=" + rstCode);
         if (handler != null) {
             new Handler(Looper.getMainLooper()).post(new CallbackCodeRunnable(handler, rstCode));
             handler = null;
@@ -63,10 +64,11 @@ public class EnableReceiveNormalMsgApi extends BaseApiAgent {
 
     /**
      * 打开/关闭透传消息
+     *
      * @param enable 打开/关闭
      */
     public void enableReceiveNormalMsg(boolean enable, EnableReceiveNormalMsgHandler handler) {
-        HMSAgentPushLog.i("enableReceiveNormalMsg:enable=" + enable + "  handler=" + StrUtils.objDesc(handler));
+        PushLog.i(TAG, "enableReceiveNormalMsg:enable=" + enable + "  handler=" + StrUtils.objDesc(handler));
         this.enable = enable;
         this.handler = handler;
         connect();

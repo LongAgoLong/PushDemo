@@ -2,6 +2,8 @@ package com.huawei.android.hms.agent.common;
 
 import android.util.Log;
 
+import com.leo.push.utils.PushLog;
+
 /**
  * 日志打印类，对打印日志进行封装，方便根据日志定位问题
  */

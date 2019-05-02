@@ -13,12 +13,13 @@ import com.huawei.android.hms.agent.common.ThreadUtil;
 import com.huawei.android.hms.agent.push.handler.EnableReceiveNotifyMsgHandler;
 import com.huawei.hms.api.HuaweiApiClient;
 import com.huawei.hms.support.api.push.HuaweiPush;
+import com.leo.push.utils.PushLog;
 
 /**
  * 打开自呈现消息开关的接口。
  */
 public class EnableReceiveNotifyMsgApi extends BaseApiAgent {
-
+    private static final String TAG = EnableReceiveNotifyMsgApi.class.getSimpleName();
     /**
      * 是否打开开关
      */
@@ -54,7 +55,7 @@ public class EnableReceiveNotifyMsgApi extends BaseApiAgent {
     }
 
     void onEnableReceiveNotifyMsgResult(int rstCode) {
-        HMSAgentPushLog.i("enableReceiveNotifyMsg:callback=" + StrUtils.objDesc(handler) +" retCode=" + rstCode);
+        PushLog.i(TAG, "enableReceiveNotifyMsg:callback=" + StrUtils.objDesc(handler) + " retCode=" + rstCode);
         if (handler != null) {
             new Handler(Looper.getMainLooper()).post(new CallbackCodeRunnable(handler, rstCode));
             handler = null;
@@ -63,10 +64,11 @@ public class EnableReceiveNotifyMsgApi extends BaseApiAgent {
 
     /**
      * 打开/关闭自呈现消息
+     *
      * @param enable 打开/关闭
      */
     public void enableReceiveNotifyMsg(boolean enable, EnableReceiveNotifyMsgHandler handler) {
-        HMSAgentPushLog.i("enableReceiveNotifyMsg:enable=" + enable + " handler=" + StrUtils.objDesc(handler));
+        PushLog.i(TAG, "enableReceiveNotifyMsg:enable=" + enable + " handler=" + StrUtils.objDesc(handler));
         this.enable = enable;
         this.handler = handler;
         connect();

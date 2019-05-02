@@ -13,12 +13,13 @@ import com.huawei.android.hms.agent.common.ThreadUtil;
 import com.huawei.android.hms.agent.push.handler.QueryAgreementHandler;
 import com.huawei.hms.api.HuaweiApiClient;
 import com.huawei.hms.support.api.push.HuaweiPush;
+import com.leo.push.utils.PushLog;
 
 /**
  * 获取push协议展示的接口。
  */
 public class QueryAgreementApi extends BaseApiAgent {
-
+    private static final String TAG = QueryAgreementApi.class.getSimpleName();
     /**
      * 调用接口回调
      */
@@ -48,7 +49,7 @@ public class QueryAgreementApi extends BaseApiAgent {
     }
 
     void onQueryAgreementResult(int rstCode) {
-        HMSAgentPushLog.i("queryAgreement:callback=" + StrUtils.objDesc(handler) +" retCode=" + rstCode);
+        PushLog.i(TAG, "queryAgreement:callback=" + StrUtils.objDesc(handler) + " retCode=" + rstCode);
         if (handler != null) {
             new Handler(Looper.getMainLooper()).post(new CallbackCodeRunnable(handler, rstCode));
             handler = null;
@@ -59,7 +60,7 @@ public class QueryAgreementApi extends BaseApiAgent {
      * 请求push协议展示
      */
     public void queryAgreement(QueryAgreementHandler handler) {
-        HMSAgentPushLog.i("queryAgreement:handler=" + StrUtils.objDesc(handler));
+        PushLog.i(TAG, "queryAgreement:handler=" + StrUtils.objDesc(handler));
         this.handler = handler;
         connect();
     }

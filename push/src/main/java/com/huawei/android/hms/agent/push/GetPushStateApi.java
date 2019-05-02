@@ -13,12 +13,13 @@ import com.huawei.android.hms.agent.common.ThreadUtil;
 import com.huawei.android.hms.agent.push.handler.GetPushStateHandler;
 import com.huawei.hms.api.HuaweiApiClient;
 import com.huawei.hms.support.api.push.HuaweiPush;
+import com.leo.push.utils.PushLog;
 
 /**
  * 获取push状态的接口。
  */
 public class GetPushStateApi extends BaseApiAgent {
-
+    private static final String TAG = GetPushStateApi.class.getSimpleName();
     /**
      * 调用接口回调
      */
@@ -48,7 +49,7 @@ public class GetPushStateApi extends BaseApiAgent {
     }
 
     void onGetPushStateResult(int rstCode) {
-        HMSAgentPushLog.i("getPushState:callback=" + StrUtils.objDesc(handler) +" retCode=" + rstCode);
+        PushLog.i(TAG, "getPushState:callback=" + StrUtils.objDesc(handler) + " retCode=" + rstCode);
         if (handler != null) {
             new Handler(Looper.getMainLooper()).post(new CallbackCodeRunnable(handler, rstCode));
             handler = null;
@@ -60,7 +61,7 @@ public class GetPushStateApi extends BaseApiAgent {
      * 要监听的广播，请参见HMS-SDK开发准备中PushReceiver的注册
      */
     public void getPushState(GetPushStateHandler handler) {
-        HMSAgentPushLog.i("getPushState:handler=" + StrUtils.objDesc(handler));
+        PushLog.i(TAG, "getPushState:handler=" + StrUtils.objDesc(handler));
         this.handler = handler;
         connect();
     }

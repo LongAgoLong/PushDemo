@@ -28,13 +28,14 @@ import com.huawei.android.hms.agent.push.handler.GetTokenHandler;
 import com.huawei.android.hms.agent.push.handler.QueryAgreementHandler;
 import com.huawei.hms.api.HuaweiApiAvailability;
 import com.huawei.hms.api.HuaweiApiClient;
+import com.leo.push.utils.PushLog;
 
 /**
  * HMSAgent 封装入口类。 提供了HMS SDK 功能的封装，使开发者更聚焦业务的处理。
  * HMSAgent encapsulates the entry class. Provides a encapsulation of the HMS SDK functionality that enables developers to focus more on business processing.
  */
 public final class HMSAgent implements INoProguard {
-
+    private static final String TAG = HMSAgent.class.getSimpleName();
     /**
      * 基础版本 | Base version
      */
@@ -44,22 +45,22 @@ public final class HMSAgent implements INoProguard {
      * 2.6.0 版本1                                            | 2.6.0 version 1
      * 对外：接口不变                                         | External: interface unchanged
      * 对内：HMSSDK connect 接口增加activity参数              | Internal: HMSSDK connect interface to increase activity parameters
-     *      HMSSDK sign 接口增加activity参数                      | HMSSDK sign interface to increase activity parameters
+     * HMSSDK sign 接口增加activity参数                      | HMSSDK sign interface to increase activity parameters
      * 自身优化：                                             | Self optimization:
-     *      1、增加了升级时被其他界面覆盖的处理                  | Increased handling of other interface coverage issues when upgrading
-     *      2、game模块savePlayerInfo接口，去掉activity的判断    | Game Module Saveplayerinfo method to remove activity judgments
-     *      3、解决错误回调成功，增加重试次数3次                 | Resolve error callback succeeded, increase retry count 3 times
-	 *      4、提供了多种HMSAgent初始化方法                      | Provides a variety of hmsagent initialization methods
-     *      5、初始化时增加了版本号校验                          | Increased version number checksum during initialization
+     * 1、增加了升级时被其他界面覆盖的处理                  | Increased handling of other interface coverage issues when upgrading
+     * 2、game模块savePlayerInfo接口，去掉activity的判断    | Game Module Saveplayerinfo method to remove activity judgments
+     * 3、解决错误回调成功，增加重试次数3次                 | Resolve error callback succeeded, increase retry count 3 times
+     * 4、提供了多种HMSAgent初始化方法                      | Provides a variety of hmsagent initialization methods
+     * 5、初始化时增加了版本号校验                          | Increased version number checksum during initialization
      */
     private static final String VER_020600001 = "020600001";
 
     /**
      * 2.6.0.200                                         | 2.6.0.200
      * 自身优化：                                        | Self optimization:
-     *      1、增加shell脚本用来抽取代码和编译成jar            | Add shell script to extract code and compile into jar
-     *      2、示例中manifest里面升级配置错误修复              | Example manifest upgrade configuration error Repair
-     *      3、抽取代码中去掉manifest文件，只留纯代码          | Remove manifest files in the extraction code, leaving only pure code
+     * 1、增加shell脚本用来抽取代码和编译成jar            | Add shell script to extract code and compile into jar
+     * 2、示例中manifest里面升级配置错误修复              | Example manifest upgrade configuration error Repair
+     * 3、抽取代码中去掉manifest文件，只留纯代码          | Remove manifest files in the extraction code, leaving only pure code
      */
     private static final String VER_020600200 = "020600200";
 
@@ -130,13 +131,14 @@ public final class HMSAgent implements INoProguard {
         public static final int EMPTY_PARAM = -1009;
     }
 
-    private HMSAgent(){}
+    private HMSAgent() {
+    }
 
-    private static boolean checkSDKVersion(Context context){
-        long sdkMainVerL = HuaweiApiAvailability.HMS_SDK_VERSION_CODE/1000;
-        long agentMainVerL = Long.parseLong(CURVER)/1000;
+    private static boolean checkSDKVersion(Context context) {
+        long sdkMainVerL = HuaweiApiAvailability.HMS_SDK_VERSION_CODE / 1000;
+        long agentMainVerL = Long.parseLong(CURVER) / 1000;
         if (sdkMainVerL != agentMainVerL) {
-            String errMsg = "error: HMSAgent major version code ("+agentMainVerL+") does not match HMSSDK major version code ("+sdkMainVerL+")";
+            String errMsg = "error: HMSAgent major version code (" + agentMainVerL + ") does not match HMSSDK major version code (" + sdkMainVerL + ")";
             HMSAgentLog.e(errMsg);
             Toast.makeText(context, errMsg, Toast.LENGTH_LONG).show();
             return false;
@@ -146,6 +148,7 @@ public final class HMSAgent implements INoProguard {
 
     /**
      * 初始化方法，传入第一个界面的activity   | Initialization method, passing in the first interface activity
+     *
      * @param activity 当前界面             | Current interface
      * @return true：成功 false：失败        | True: Success false: Failed
      */
@@ -155,6 +158,7 @@ public final class HMSAgent implements INoProguard {
 
     /**
      * 初始化方法，建议在Application onCreate里面调用    | Initialization method, it is recommended to call in creator OnCreate
+     *
      * @param app 应用程序                              | Application
      * @return true：成功 false：失败                   | True: Success false: Failed
      */
@@ -164,7 +168,8 @@ public final class HMSAgent implements INoProguard {
 
     /**
      * 初始化方法，建议在Application onCreate里面调用 | Initialization method, it is recommended to call in creator OnCreate
-     * @param app 应用程序 | Application
+     *
+     * @param app      应用程序 | Application
      * @param activity 当前界面 | Current activity
      * @return true：成功 false：失败 | True: Success false: Failed
      */
@@ -200,7 +205,7 @@ public final class HMSAgent implements INoProguard {
             return false;
         }
 
-        HMSAgentPushLog.i("init HMSAgent " + CURVER + " with hmssdkver " + HuaweiApiAvailability.HMS_SDK_VERSION_CODE);
+        PushLog.i(TAG, "init HMSAgent " + CURVER + " with hmssdkver " + HuaweiApiAvailability.HMS_SDK_VERSION_CODE);
 
         // 初始化activity管理类 | Initializing Activity Management Classes
         ActivityMgr.INST.init(appTmp, activityTmp);
@@ -215,7 +220,7 @@ public final class HMSAgent implements INoProguard {
      * 释放资源，这里一般不需要调用 | Frees resources, which are generally not required to call
      */
     public static void destroy() {
-        HMSAgentPushLog.i("destroy HMSAgent");
+        PushLog.i(TAG, "destroy HMSAgent");
         ActivityMgr.INST.release();
         ApiClientMgr.INST.release();
     }
@@ -224,11 +229,12 @@ public final class HMSAgent implements INoProguard {
      * 连接HMS SDK， 可能拉起界面(包括升级引导等)，建议在第一个界面进行连接。 | Connecting to the HMS SDK may pull up the activity (including upgrade guard, etc.), and it is recommended that you connect in the first activity.
      * 此方法可以重复调用，没必要为了只调用一次做复杂处理 | This method can be called repeatedly, and there is no need to do complex processing for only one call at a time
      * 方法为异步调用，调用结果在主线程回调 | Method is called asynchronously, and the result is invoked in the main thread callback
+     *
      * @param activity 当前界面的activity， 不能传空 | Activity of the current activity, cannot be empty
      * @param callback 连接结果回调 | Connection Result Callback
      */
     public static void connect(Activity activity, final ConnectHandler callback) {
-        HMSAgentPushLog.i("start connect");
+        PushLog.i(TAG, "start connect");
         ApiClientMgr.INST.connect(new IClientConnectCallback() {
             @Override
             public void onConnect(final int rst, HuaweiApiClient client) {
@@ -251,54 +257,60 @@ public final class HMSAgent implements INoProguard {
         /**
          * 获取pushtoken接口 | Get Pushtoken method
          * pushtoken通过广播下发，要监听的广播，请参见HMS-SDK开发准备中PushReceiver的注册 | Pushtoken Broadcast issued, to listen to the broadcast, see HMS-SDK Development Preparation Pushreceiver Registration
+         *
          * @param handler pushtoken接口调用回调（结果会在主线程回调） | getToken method Call callback (result will be callback in main thread)
          */
-        public static void getToken(GetTokenHandler handler){
+        public static void getToken(GetTokenHandler handler) {
             new GetTokenApi().getToken(handler);
         }
 
         /**
          * 删除指定的pushtoken | Deletes the specified Pushtoken
          * 该接口只在EMUI5.1以及更高版本的华为手机上调用该接口后才不会收到PUSH消息。 | The method will not receive a push message until it is invoked on EMUI5.1 and later Huawei handsets.
-         * @param token 要删除的token | Token to delete
+         *
+         * @param token   要删除的token | Token to delete
          * @param handler 方法调用结果回调（结果会在主线程回调） | Method call result Callback (result will be callback on main thread)
          */
-        public static void deleteToken(String token, DeleteTokenHandler handler){
+        public static void deleteToken(String token, DeleteTokenHandler handler) {
             new DeleteTokenApi().deleteToken(token, handler);
         }
 
         /**
          * 获取push状态，push状态的回调通过广播发送。 | Gets the push state, and the push state callback is sent by broadcast.
          * 要监听的广播，请参见HMS-SDK开发准备中PushReceiver的注册 | To listen for broadcasts, see Pushreceiver Registration in HMS-SDK development preparation
+         *
          * @param handler 方法调用结果回调（结果会在主线程回调） | Method call result Callback (result will be callback on main thread)
          */
-        public static void getPushState(GetPushStateHandler handler){
+        public static void getPushState(GetPushStateHandler handler) {
             new GetPushStateApi().getPushState(handler);
         }
 
         /**
          * 打开/关闭通知栏消息 | Turn on/off notification bar messages
-         * @param enable 打开/关闭 | Turn ON/off
+         *
+         * @param enable  打开/关闭 | Turn ON/off
          * @param handler 方法调用结果回调（结果会在主线程回调） | Method call result Callback (result will be callback on main thread)
          */
-        public static void enableReceiveNotifyMsg(boolean enable, EnableReceiveNotifyMsgHandler handler){
+        public static void enableReceiveNotifyMsg(boolean enable, EnableReceiveNotifyMsgHandler handler) {
             new EnableReceiveNotifyMsgApi().enableReceiveNotifyMsg(enable, handler);
         }
 
         /**
          * 打开/关闭透传消息 | Turn on/off the pass message
-         * @param enable 打开/关闭 | Turn ON/off
+         *
+         * @param enable  打开/关闭 | Turn ON/off
          * @param handler 方法调用结果回调（结果会在主线程回调） | Method call result Callback (result will be callback on main thread)
          */
-        public static void enableReceiveNormalMsg(boolean enable, EnableReceiveNormalMsgHandler handler){
+        public static void enableReceiveNormalMsg(boolean enable, EnableReceiveNormalMsgHandler handler) {
             new EnableReceiveNormalMsgApi().enableReceiveNormalMsg(enable, handler);
         }
 
         /**
          * 请求push协议展示 | Request RomPushManager Protocol Display
+         *
          * @param handler 方法调用结果回调（结果会在主线程回调）| Method call result Callback (result will be callback on main thread)
          */
-        public static void queryAgreement(QueryAgreementHandler handler){
+        public static void queryAgreement(QueryAgreementHandler handler) {
             new QueryAgreementApi().queryAgreement(handler);
         }
     }
