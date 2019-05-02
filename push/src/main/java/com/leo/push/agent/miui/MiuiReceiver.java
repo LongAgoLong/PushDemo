@@ -86,6 +86,7 @@ public class MiuiReceiver extends PushMessageReceiver {
 
     @Override
     public void onNotificationMessageClicked(final Context context, MiPushMessage message) {
+        PushLog.i(TAG, "onNotificationMessageClicked---message:" + message.toString());
         mMessage = message.getContent();
         if (!TextUtils.isEmpty(message.getTopic())) {
             mTopic = message.getTopic();

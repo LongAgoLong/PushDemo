@@ -5,7 +5,7 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.coloros.mcssdk.PushManager;
-import com.leo.push.agent.RomPush;
+import com.leo.push.agent.RomPushManager;
 import com.vivo.push.PushClient;
 
 import java.io.IOException;
@@ -111,7 +111,7 @@ public class RomUtil {
      * @return
      */
     private static boolean isOppo() {
-        Context context = RomPush.getContext();
+        Context context = RomPushManager.getContext();
         if (null != context) {
             return PushManager.isSupportPush(context);
         }
@@ -119,7 +119,7 @@ public class RomUtil {
     }
 
     private static boolean isVivo() {
-        Context context = RomPush.getContext();
+        Context context = RomPushManager.getContext();
         if (null != context) {
             return PushClient.getInstance(context).isSupport();
         }

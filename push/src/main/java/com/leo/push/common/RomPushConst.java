@@ -43,19 +43,19 @@ public class RomPushConst {
         return oppo_app_secret;
     }
 
-    public static String getFlymeId() {
-        if (TextUtils.isEmpty(flyme_app_id)) {
-            throw new NullPointerException("please config flyme_app_id before use it");
-        }
-        return flyme_app_id;
-    }
-
-    public static String getFlymeKey() {
-        if (TextUtils.isEmpty(flyme_app_key)) {
-            throw new NullPointerException("please config flyme_app_key before use it");
-        }
-        return flyme_app_key;
-    }
+//    public static String getFlymeId() {
+//        if (TextUtils.isEmpty(flyme_app_id)) {
+//            throw new NullPointerException("please config flyme_app_id before use it");
+//        }
+//        return flyme_app_id;
+//    }
+//
+//    public static String getFlymeKey() {
+//        if (TextUtils.isEmpty(flyme_app_key)) {
+//            throw new NullPointerException("please config flyme_app_key before use it");
+//        }
+//        return flyme_app_key;
+//    }
 
 
     public static void setMiuiPush(String miui_app_id, String miui_app_key) {

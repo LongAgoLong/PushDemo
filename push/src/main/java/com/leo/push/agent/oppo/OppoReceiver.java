@@ -9,6 +9,7 @@ import com.coloros.mcssdk.mode.SptDataMessage;
 import com.leo.push.common.Message;
 import com.leo.push.common.PushInterface;
 import com.leo.push.utils.MainHandler;
+import com.leo.push.utils.PushLog;
 import com.leo.push.utils.Target;
 
 /**
@@ -53,6 +54,7 @@ public class OppoReceiver extends PushService {
     @Override
     public void processMessage(Context context, AppMessage appMessage) {
         super.processMessage(context, appMessage);
+        PushLog.i(TAG, "processMessage---appMessage:" + appMessage.toString());
         Message result = new Message();
         result.setNotifyID(1);
         result.setMessageID(String.valueOf(appMessage.getMessageID()));

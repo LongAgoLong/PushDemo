@@ -6,6 +6,7 @@ import com.leo.push.common.Message;
 import com.leo.push.common.PushInterface;
 import com.leo.push.utils.JsonUtils;
 import com.leo.push.utils.MainHandler;
+import com.leo.push.utils.PushLog;
 import com.vivo.push.model.UPSNotificationMessage;
 import com.vivo.push.sdk.OpenClientPushMessageReceiver;
 
@@ -33,6 +34,7 @@ public class VivoReceiver extends OpenClientPushMessageReceiver {
 
     @Override
     public void onNotificationMessageClicked(Context context, UPSNotificationMessage msg) {
+        PushLog.i(TAG, "onNotificationMessageClicked---msg:" + msg.toString());
         if (null != mPushInterface) {
             Message message = new Message();
             message.setNotifyID(1);

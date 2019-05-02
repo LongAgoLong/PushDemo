@@ -2,7 +2,7 @@ package com.leo.pushdemo;
 
 import android.app.Application;
 
-import com.leo.push.agent.RomPush;
+import com.leo.push.agent.RomPushManager;
 import com.leo.push.common.RomPushConst;
 
 public class RomPushApplication extends Application {
@@ -19,8 +19,8 @@ public class RomPushApplication extends Application {
          * 判断是否主进程
          * true-注册推送
          */
-        if (RomPush.isMainProcess(this)) {
-            RomPush.register(this, true, new RomPushService());
+        if (RomPushManager.isMainProcess(this)) {
+            RomPushManager.register(this, true, new RomPushService());
         }
     }
 }

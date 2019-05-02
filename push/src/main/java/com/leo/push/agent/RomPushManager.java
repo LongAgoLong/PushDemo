@@ -40,8 +40,8 @@ import cn.jpush.android.api.JPushInterface;
  * Created by LEO
  * on 2017/7/3.
  */
-public class RomPush {
-    private static final String TAG = RomPush.class.getSimpleName();
+public class RomPushManager {
+    private static final String TAG = RomPushManager.class.getSimpleName();
     private static WeakReference<Context> weakReference;
 
     public static Context getContext() {

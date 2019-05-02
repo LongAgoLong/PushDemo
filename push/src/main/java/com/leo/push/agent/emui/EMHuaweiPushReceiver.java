@@ -76,7 +76,7 @@ public class EMHuaweiPushReceiver extends PushReceiver {
                 message.setTarget(Target.EMUI);
                 MainHandler.handler().post(() -> mPushInterface.onCustomMessage(context, message));
             }
-            PushLog.i("RomPush", content);
+            PushLog.i("RomPushManager", content);
         } catch (Exception e) {
             e.printStackTrace();
         }
