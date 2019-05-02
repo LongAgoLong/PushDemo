@@ -380,7 +380,7 @@ implementation 'com.github.LongAgoLong:QrcodeDemo:$JitPack-Version$'
 ### ④实现PushInterface接口以实现处理逻辑
 ### ⑤Application中配置
 ```java
-/**
+	/**
          * 添加miui的id和key
          */
         RomPushConst.setMiuiPush("申请的miui的APP_ID", "申请的miui的APP_KEY");
