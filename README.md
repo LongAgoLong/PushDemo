@@ -1,5 +1,6 @@
 # PushDemo
-混合推送【华为、小米、OPPO、vivo、极光】 
+混合推送【华为、小米、OPPO、vivo、极光】  
+[![](https://jitpack.io/v/LongAgoLong/PushDemo.svg)](https://jitpack.io/#LongAgoLong/PushDemo)  
 ## 2、使用方式
 ### ①添加依赖
 **gradle依赖**
@@ -12,7 +13,7 @@ allprojects {
 }
 ```
 ```java
-implementation 'com.github.LongAgoLong:QrcodeDemo:$JitPack-Version$'
+implementation 'com.github.LongAgoLong:PushDemo:$JitPack-Version$'
 ```
 **maven依赖**
 ```java
@@ -26,7 +27,7 @@ implementation 'com.github.LongAgoLong:QrcodeDemo:$JitPack-Version$'
 ```java
 <dependency>
 	<groupId>com.github.LongAgoLong</groupId>
-	<artifactId>QrcodeDemo</artifactId>
+	<artifactId>PushDemo</artifactId>
 	<version>$JitPack-Version$</version>
 </dependency>
 ```
