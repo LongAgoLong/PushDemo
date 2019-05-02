@@ -65,7 +65,7 @@ implementation 'com.github.LongAgoLong:QrcodeDemo:$JitPack-Version$'
         android:name="${PNAME}.permission.JPUSH_MESSAGE"
         android:protectionLevel="signature" />
 ```
-### ②清单文件配置
+### ③清单文件配置
 ```java
 	<!--
         ///////////////////////////
@@ -376,5 +376,22 @@ implementation 'com.github.LongAgoLong:QrcodeDemo:$JitPack-Version$'
         <meta-data
             android:name="JPUSH_APPKEY"
             android:value="${JPUSH_APPKEY}" /> <!-- </>值来自开发者平台取得的AppKey -->
+```
+### ④实现PushInterface接口以实现处理逻辑
+### ⑤Application中配置
+```java
+/**
+         * 添加miui的id和key
+         */
+        RomPushConst.setMiuiPush("申请的miui的APP_ID", "申请的miui的APP_KEY");
+        RomPushConst.setOppoPush("申请的OPPO的APP_KEY", "申请的OPPO的APP_SECRET");
+        // 注册推送
+        /**
+         * 判断是否主进程
+         * true-注册推送
+         */
+        if (RomPushManager.isMainProcess(this)) {
+            RomPushManager.register(this, true, new RomPushService());
+        }
 ```
 
