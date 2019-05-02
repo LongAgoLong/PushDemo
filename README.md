@@ -32,7 +32,7 @@ implementation 'com.github.LongAgoLong:QrcodeDemo:$JitPack-Version$'
 ```
 ### ②权限配置
 ```java
-<!-- 公用权限 -->
+    <!-- 公用权限 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -67,7 +67,7 @@ implementation 'com.github.LongAgoLong:QrcodeDemo:$JitPack-Version$'
 ```
 ### ②清单文件配置
 ```java
-<!--
+	<!--
         ///////////////////////////
         //   以下为华为推送SDK注册  //
         ///////////////////////////
