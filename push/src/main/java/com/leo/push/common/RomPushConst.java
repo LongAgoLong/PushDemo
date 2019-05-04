@@ -8,93 +8,93 @@ import android.text.TextUtils;
  */
 public class RomPushConst {
 
-    private static String miui_app_id = null;
-    private static String miui_app_key = null;
-    private static String oppo_app_key = null;
-    private static String oppo_app_secret = null;
-    private static String flyme_app_id = null;
-    private static String flyme_app_key = null;
+    private static String miuiAppId = null;
+    private static String miuiAppKey = null;
+    private static String oppoAppKey = null;
+    private static String oppoAppSecret = null;
+    private static String flymeAppId = null;
+    private static String flymeAppKey = null;
 
     public static String getMiuiId() {
-        if (TextUtils.isEmpty(miui_app_id)) {
-            throw new NullPointerException("please config miui_app_id before use it");
+        if (TextUtils.isEmpty(miuiAppId)) {
+            throw new NullPointerException("please config miuiAppId before use it");
         }
-        return miui_app_id;
+        return miuiAppId;
     }
 
     public static String getMiuiKey() {
-        if (TextUtils.isEmpty(miui_app_key)) {
-            throw new NullPointerException("please config miui_app_key before use it");
+        if (TextUtils.isEmpty(miuiAppKey)) {
+            throw new NullPointerException("please config miuiAppKey before use it");
         }
-        return miui_app_key;
+        return miuiAppKey;
     }
 
     public static String getOppoKey() {
-        if (TextUtils.isEmpty(oppo_app_key)) {
-            throw new NullPointerException("please config oppo_app_key before use it");
+        if (TextUtils.isEmpty(oppoAppKey)) {
+            throw new NullPointerException("please config oppoAppKey before use it");
         }
-        return oppo_app_key;
+        return oppoAppKey;
     }
 
     public static String getOppoSecret() {
-        if (TextUtils.isEmpty(oppo_app_secret)) {
-            throw new NullPointerException("please config oppo_app_secret before use it");
+        if (TextUtils.isEmpty(oppoAppSecret)) {
+            throw new NullPointerException("please config oppoAppSecret before use it");
         }
-        return oppo_app_secret;
+        return oppoAppSecret;
     }
 
 //    public static String getFlymeId() {
-//        if (TextUtils.isEmpty(flyme_app_id)) {
-//            throw new NullPointerException("please config flyme_app_id before use it");
+//        if (TextUtils.isEmpty(flymeAppId)) {
+//            throw new NullPointerException("please config flymeAppId before use it");
 //        }
-//        return flyme_app_id;
+//        return flymeAppId;
 //    }
 //
 //    public static String getFlymeKey() {
-//        if (TextUtils.isEmpty(flyme_app_key)) {
-//            throw new NullPointerException("please config flyme_app_key before use it");
+//        if (TextUtils.isEmpty(flymeAppKey)) {
+//            throw new NullPointerException("please config flymeAppKey before use it");
 //        }
-//        return flyme_app_key;
+//        return flymeAppKey;
 //    }
 
 
     public static void setMiuiPush(String miui_app_id, String miui_app_key) {
-        setMiui_app_id(miui_app_id);
-        setMiui_app_key(miui_app_key);
+        setMiuiAppId(miui_app_id);
+        setMiuiAppKey(miui_app_key);
     }
 
-//    public static void setFlymePush(String flyme_app_id, String flyme_app_key) {
-//        setFlyme_app_id(flyme_app_id);
-//        setFlyme_app_key(flyme_app_key);
+//    public static void setFlymePush(String flymeAppId, String flymeAppKey) {
+//        setFlymeAppId(flymeAppId);
+//        setFlymeAppKey(flymeAppKey);
 //    }
 
     public static void setOppoPush(String appKey, String appSecret){
-        setOppo_app_key(appKey);
-        setOppo_app_secret(appSecret);
+        setOppoAppKey(appKey);
+        setOppoAppSecret(appSecret);
     }
 
 
-    private static void setOppo_app_key(String oppo_app_key) {
-        RomPushConst.oppo_app_key = oppo_app_key;
+    private static void setOppoAppKey(String oppoAppKey) {
+        RomPushConst.oppoAppKey = oppoAppKey;
     }
 
-    private static void setOppo_app_secret(String oppo_app_secret) {
-        RomPushConst.oppo_app_secret = oppo_app_secret;
+    private static void setOppoAppSecret(String oppoAppSecret) {
+        RomPushConst.oppoAppSecret = oppoAppSecret;
     }
 
-    private static void setMiui_app_id(String miui_app_id) {
-        RomPushConst.miui_app_id = miui_app_id;
+    private static void setMiuiAppId(String miui_app_id) {
+        RomPushConst.miuiAppId = miui_app_id;
     }
 
-    private static void setMiui_app_key(String miui_app_key) {
-        RomPushConst.miui_app_key = miui_app_key;
+    private static void setMiuiAppKey(String miui_app_key) {
+        RomPushConst.miuiAppKey = miui_app_key;
     }
 
-    private static void setFlyme_app_id(String flyme_app_id) {
-        RomPushConst.flyme_app_id = flyme_app_id;
+    private static void setFlymeAppId(String flyme_app_id) {
+        RomPushConst.flymeAppId = flyme_app_id;
     }
 
-    private static void setFlyme_app_key(String flyme_app_key) {
-        RomPushConst.flyme_app_key = flyme_app_key;
+    private static void setFlymeAppKey(String flyme_app_key) {
+        RomPushConst.flymeAppKey = flyme_app_key;
     }
 }
