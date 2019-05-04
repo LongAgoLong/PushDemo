@@ -1,5 +1,5 @@
 # PushDemo
-混合推送【华为、小米、OPPO、vivo、极光】  
+系统级混合推送【华为、小米、OPPO、vivo、极光】  
 [![](https://jitpack.io/v/LongAgoLong/PushDemo.svg)](https://jitpack.io/#LongAgoLong/PushDemo)  
 ## 2、使用方式
 ### ①添加依赖
